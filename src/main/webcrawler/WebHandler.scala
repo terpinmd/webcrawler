@@ -6,6 +6,7 @@ package webcrawler
  */
 import org.htmlcleaner._
 import java.net.URL
+import webcrawler.TagMatcher._
 
 class WebHandler {
 
@@ -17,27 +18,22 @@ class WebHandler {
     return rootNode.getElementsByName("body", true)(0)
   }
 
-
-
-
-    def traverse(node: TagNode): Unit = {
-      node.traverse(new TagNodeVisitor {
-          def visit(parentNode: TagNode, htmlNode: HtmlNode): Boolean = {
-            htmlNode match {
-              case node: TagNode => {
-                  println(node.getName())            
-                }
-              case commentNode: CommentNode => {
-                  println(commentNode)            
-                } 
-              case contentNode: ContentNode => {
-                  println(parentNode.getName() + " <-parent " + contentNode.getContent())
-                }
-              case _ => throw new ClassCastException
+  def traverse(node: TagNode, callback: (String, String) => Unit): Unit = {
+    node.traverse(new TagNodeVisitor {
+      def visit(parentNode: TagNode, htmlNode: HtmlNode): Boolean = {
+        htmlNode match {
+          case node: TagNode => {}
+          case commentNode: CommentNode => {}
+          case contentNode: ContentNode => {
+            if (tagMatch(parentNode.getName())) {
+              callback(parentNode.getName(), contentNode.getContent())
             }
-            true
           }
-        })
-    }
+          case _ => throw new ClassCastException
+        }
+        true
+      }
+    })
+  }
 
 }

@@ -7,12 +7,21 @@ import java.net.URL
 import scala.collection.mutable._
 import org.apache.commons.lang._
 import webcrawler.WebHandler
+import webcrawler.DataAccess
 
+object Driver {
+  def main(args: Array[String]) = {
 
-object Driver { 
-  def main(args: Array[String]) = {println("dddddd") }
+    val webHandler = new WebHandler
+    var dataAccess = new DataAccess
 
-  val webHandler = new WebHandler
-  val body = webHandler.getBody("http://www.testudotimes.com/2015/2/23/8085389/maryland-wisconsin-basketball-game-2015-preview")
-  webHandler.traverse(body)
+    val body = webHandler.getBody("http://www.testudotimes.com/2015/2/23/8085389/maryland-wisconsin-basketball-game-2015-preview")
+
+    webHandler.traverse(body, dataAccess.parse) 
+    
+    var body2 = webHandler.getBody("http://www.cbssportsline.com")
+    webHandler.traverse(body2, dataAccess.parse)     
+    
+  }
 } 
+
