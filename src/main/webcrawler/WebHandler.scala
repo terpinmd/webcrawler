@@ -8,12 +8,12 @@ import org.htmlcleaner._
 import java.net.URL
 import webcrawler.TagMatcher._
 
-class WebHandler {
+object WebHandler {
 
   //Per docs this is thread safe
   val cleaner = new HtmlCleaner
 
-  def getBody(url: String): TagNode = {
+  def body(url: String): TagNode = {
     val rootNode = cleaner.clean(new URL(url))
     return rootNode.getElementsByName("body", true)(0)
   }
