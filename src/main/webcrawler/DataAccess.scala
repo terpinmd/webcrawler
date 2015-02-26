@@ -5,10 +5,9 @@ import net.liftweb.json.JsonDSL._
 import scala.collection.mutable.ListBuffer
 
 class DataAccess {
-
-  private val data = List()
   
   def parse(tag: String, content : String): Boolean = {
+    if(content == null) return false
     var trimmedContent = content.trim   
     if(trimmedContent.length == 0) return false
     val json = ("tag" -> tag) ~ ("content" -> content.trim)

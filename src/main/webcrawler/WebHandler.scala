@@ -17,23 +17,4 @@ object WebHandler {
     val rootNode = cleaner.clean(new URL(url))
     return rootNode.getElementsByName("body", true)(0)
   }
-
-  def traverse(node: TagNode, callback: (String, String) => Unit): Unit = {
-    node.traverse(new TagNodeVisitor {
-      def visit(parentNode: TagNode, htmlNode: HtmlNode): Boolean = {
-        htmlNode match {
-          case node: TagNode => {}
-          case commentNode: CommentNode => {}
-          case contentNode: ContentNode => {
-            if (tagMatch(parentNode.getName())) {
-              callback(parentNode.getName(), contentNode.getContent())
-            }
-          }
-          case _ => throw new ClassCastException
-        }
-        true
-      }
-    })
-  }
-
 }

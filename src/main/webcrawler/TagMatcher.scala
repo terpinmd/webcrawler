@@ -9,6 +9,7 @@ object TagMatcher {
 
   def tagMatch(tag: String): Boolean = tag match {
     case "p" => true
+    case "a" => true      
     case _ => false
   }
 }
