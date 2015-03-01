@@ -35,13 +35,19 @@ class NodeInspector(n: TagNode) {
     })
   }
 
-  def findLinks() : ListBuffer[String] = {
+  def collect(f : (String, String) => String) : ListBuffer[String] = {
     val list =  new ListBuffer[String]
     
-    def pOut (s:String, h:String) = {
-      println(s, h)
-    }
-    traverse(pOut)
+    def append(t:String, c:String) = {
+      val result = f(t,c)
+      if(result != ""){
+        list+= result
+      }        
+    }    
+    traverse(append)
     list
   }
+  
+
+  
 }

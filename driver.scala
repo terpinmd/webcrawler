@@ -1,28 +1,26 @@
 
-import scalaj.http._
-import net.liftweb.json._
-import scala.xml._
-import org.htmlcleaner._
-import java.net.URL
-import scala.collection.mutable._
 import org.apache.commons.lang._
 import webcrawler.WebHandler._
-import webcrawler.DataAccess
 import webcrawler.NodeInspector
+import scala.collection.mutable.ListBuffer
 
 object Driver {
   def main(args: Array[String]) = {
 
-    var dataAccess = new DataAccess
     
+    def getSites() : ListBuffer[String] = {
+      val list = new ListBuffer[String]()
+      list += "http://www.testudotimes.com/"
+      list += "http://www.testudotimes.com/2015/2/23/8085389/maryland-wisconsin-basketball-game-2015-preview" 
+      list += "http://www.foxnews.com"
+      list
+    }    
     
-    for (site <- dataAccess.getSites){
-      var inspector = new NodeInspector(body(site))
-      inspector.traverse(dataAccess.parse)
-      inspector.findLinks()
-    } 
-    
-    
+    for (url <- getSites){
+      var inspector = new NodeInspector(body(url))
+      var list = inspector.collect(asJSON)
+      println(list);
+    }    
   }
 } 
 
