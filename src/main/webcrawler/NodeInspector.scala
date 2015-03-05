@@ -6,7 +6,6 @@ package webcrawler
  */
 
 import org.htmlcleaner._
-import webcrawler.TagMatcher._
 import scala.collection.mutable.ListBuffer
 
 class NodeInspector(n: TagNode) {

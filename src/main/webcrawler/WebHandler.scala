@@ -6,7 +6,6 @@ package webcrawler
  */
 import org.htmlcleaner._
 import java.net.URL
-import webcrawler.TagMatcher._
 import net.liftweb.json._
 import net.liftweb.json.JsonDSL._
 
@@ -20,11 +19,6 @@ object WebHandler {
     return rootNode.getElementsByName("body", true)(0)
   }
   
-  def href(s:String, c: ContentNode) : String = {
-    if(s == "href")
-      return s + ":" + c.getContent.trim
-    ""
-  } 
   
   def asJSON(tag: String, c : ContentNode): String = {
     if(c == null) return ""
@@ -33,4 +27,5 @@ object WebHandler {
     val json = ("tag" -> tag) ~ ("content" -> trimmedContent)
     return compact(render(json))
   }
+  
 }
