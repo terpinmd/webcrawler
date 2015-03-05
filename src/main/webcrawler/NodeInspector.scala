@@ -12,21 +12,16 @@ import scala.collection.mutable.ListBuffer
 class NodeInspector(n: TagNode) {
   var node: TagNode = n
 
-  def traverse(callback: (String, String) => Unit): Unit = {
+  val noop = {}
+  
+  def traverse(callback: (String, ContentNode) => Unit): Unit = {
     node.traverse(new TagNodeVisitor {
       def visit(parentNode: TagNode, htmlNode: HtmlNode): Boolean = {
         htmlNode match {
-          case tagNode: TagNode => {
-              if(tagNode.getName() == "a"){
-                if(callback != null)
-                callback("href",tagNode.getAttributeByName("href"))                
-              }
-          }
+          case tagNode: TagNode => noop
           case commentNode: CommentNode => {}          
           case contentNode: ContentNode => {
-            if (tagMatch(parentNode.getName() )) {
-              callback(parentNode.getName(), contentNode.getContent())
-            }
+            callback(parentNode.getName(), contentNode)
           }
           case _ => throw new ClassCastException
         }
@@ -35,16 +30,16 @@ class NodeInspector(n: TagNode) {
     })
   }
 
-  def collect(f : (String, String) => String) : ListBuffer[String] = {
-    val list =  new ListBuffer[String]
+  def collect(f : (String, ContentNode) => String) : ListBuffer[String] = {
+    val list =  new ListBuffer[String]        
     
-    def append(t:String, c:String) = {
+    traverse((t:String, c:ContentNode) => {
       val result = f(t,c)
       if(result != ""){
         list+= result
       }        
-    }    
-    traverse(append)
+    })
+  
     list
   }
   

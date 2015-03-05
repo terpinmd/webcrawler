@@ -20,17 +20,17 @@ object WebHandler {
     return rootNode.getElementsByName("body", true)(0)
   }
   
-  def href(s:String, h:String) : String = {
+  def href(s:String, c: ContentNode) : String = {
     if(s == "href")
-      return s + ":" + h
+      return s + ":" + c.getContent.trim
     ""
   } 
   
-  def asJSON(tag: String, content : String): String = {
-    if(content == null) return ""
-    var trimmedContent = content.trim   
+  def asJSON(tag: String, c : ContentNode): String = {
+    if(c == null) return ""
+    val trimmedContent = c.getContent.trim   
     if(trimmedContent.length == 0) return ""
-    val json = ("tag" -> tag) ~ ("content" -> content.trim)
+    val json = ("tag" -> tag) ~ ("content" -> trimmedContent)
     return compact(render(json))
   }
 }
