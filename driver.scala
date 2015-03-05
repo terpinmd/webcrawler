@@ -20,17 +20,15 @@ object Driver {
     }    
     
     for (url <- getSites){
+      
       var inspector = new NodeInspector(body(url))
       var list = inspector.collect(asJSON)
 
-      val links = (string: String) => {toTag(string).tag == "link"}
+      val links = list.map({json => toTag(json)}).filter(item => item.tag == "link")
       
-      var a = list.filter(links)
+      println(Set(links.map({link => link.content})))
       
-      
-      println(a)
-      
-      for (item <- list) { println(asMap(item)) }
+      //for (item <- list) { println(asMap(item)) }
 
     }   
   }

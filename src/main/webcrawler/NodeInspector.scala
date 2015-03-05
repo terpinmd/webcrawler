@@ -13,6 +13,15 @@ class NodeInspector(n: TagNode) {
 
   val noop = {}
   
+  def cleanURL(url: String) : String = {
+    var clean = url.replaceAll("&#x2F;", "/")
+    val needsHttp = clean indexOf "//"
+    if(needsHttp == 0){
+      return "http:" + clean
+    }
+    clean
+  }
+  
   def traverse(callback: (String, String) => Unit): Unit = {
     node.traverse(new TagNodeVisitor {
       def visit(parentNode: TagNode, htmlNode: HtmlNode): Boolean = {
@@ -20,7 +29,7 @@ class NodeInspector(n: TagNode) {
           case tagNode: TagNode => {
             var link = tagNode.getAttributeByName("href")
             if(link != null){
-              callback("link",  link.replaceAll("&#x2F;", "/"))              
+              callback("link",  cleanURL(link))              
             }
           }
           case commentNode: CommentNode => {}          
