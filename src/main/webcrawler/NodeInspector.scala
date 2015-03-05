@@ -7,7 +7,6 @@ package webcrawler
 
 import org.htmlcleaner._
 import scala.collection.mutable.ListBuffer
-import java.net.URLDecoder;
 
 class NodeInspector(n: TagNode) {
   var node: TagNode = n
@@ -19,11 +18,9 @@ class NodeInspector(n: TagNode) {
       def visit(parentNode: TagNode, htmlNode: HtmlNode): Boolean = {
         htmlNode match {
           case tagNode: TagNode => {
-            //move this to tag util
-            var encoded = tagNode.getAttributeByName("href")
-            if(encoded != null){
-              val decoded = URLDecoder.decode(encoded, "utf-8")
-              callback("link " + parentNode.getName,  URLDecoder.decode(encoded, "utf-8"))              
+            var link = tagNode.getAttributeByName("href")
+            if(link != null){
+              callback("link",  link.replaceAll("&#x2F;", "/"))              
             }
           }
           case commentNode: CommentNode => {}          

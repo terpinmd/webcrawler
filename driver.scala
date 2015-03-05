@@ -23,9 +23,14 @@ object Driver {
       var inspector = new NodeInspector(body(url))
       var list = inspector.collect(asJSON)
 
-      var a = list.map( item => {
-          println(asMap(item))
-      })
+      val links = (string: String) => {toTag(string).tag == "link"}
+      
+      var a = list.filter(links)
+      
+      
+      println(a)
+      
+      for (item <- list) { println(asMap(item)) }
 
     }   
   }
