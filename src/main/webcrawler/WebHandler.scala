@@ -20,9 +20,9 @@ object WebHandler {
   }
   
   
-  def asJSON(tag: String, c : ContentNode): String = {
-    if(c == null) return ""
-    val trimmedContent = c.getContent.trim   
+  def asJSON(tag: String, content : String): String = {
+    if(content == null) return ""
+    val trimmedContent = content.trim   
     if(trimmedContent.length == 0) return ""
     val json = ("tag" -> tag) ~ ("content" -> trimmedContent)
     return compact(render(json))

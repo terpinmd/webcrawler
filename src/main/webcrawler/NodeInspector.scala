@@ -7,20 +7,28 @@ package webcrawler
 
 import org.htmlcleaner._
 import scala.collection.mutable.ListBuffer
+import java.net.URLDecoder;
 
 class NodeInspector(n: TagNode) {
   var node: TagNode = n
 
   val noop = {}
   
-  def traverse(callback: (String, ContentNode) => Unit): Unit = {
+  def traverse(callback: (String, String) => Unit): Unit = {
     node.traverse(new TagNodeVisitor {
       def visit(parentNode: TagNode, htmlNode: HtmlNode): Boolean = {
         htmlNode match {
-          case tagNode: TagNode => noop
+          case tagNode: TagNode => {
+            //move this to tag util
+            var encoded = tagNode.getAttributeByName("href")
+            if(encoded != null){
+              val decoded = URLDecoder.decode(encoded, "utf-8")
+              callback("link " + parentNode.getName,  URLDecoder.decode(encoded, "utf-8"))              
+            }
+          }
           case commentNode: CommentNode => {}          
           case contentNode: ContentNode => {
-            callback(parentNode.getName(), contentNode)
+            callback(parentNode.getName(), contentNode.getContent())
           }
           case _ => throw new ClassCastException
         }
@@ -29,10 +37,10 @@ class NodeInspector(n: TagNode) {
     })
   }
 
-  def collect(f : (String, ContentNode) => String) : ListBuffer[String] = {
+  def collect(f : (String, String) => String) : ListBuffer[String] = {
     val list =  new ListBuffer[String]        
     
-    traverse((t:String, c:ContentNode) => {
+    traverse((t:String, c:String) => {
       val result = f(t,c)
       if(result != ""){
         list+= result
