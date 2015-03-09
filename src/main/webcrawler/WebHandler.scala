@@ -8,15 +8,23 @@ import org.htmlcleaner._
 import java.net.URL
 import net.liftweb.json._
 import net.liftweb.json.JsonDSL._
-
+import scala.util.Try
 object WebHandler {
 
   //Per docs this is thread safe
   val cleaner = new HtmlCleaner
 
   def body(url: String): TagNode = {
-    val rootNode = cleaner.clean(new URL(url))
-    return rootNode.getElementsByName("body", true)(0)
+    var rootNode : TagNode = null
+    try{
+      rootNode = cleaner.clean(new URL(url))
+      return rootNode.getElementsByName("body", true)(0)
+    } catch{
+      case ex: java.io.IOException =>{
+        
+      }
+    }
+    return new TagNode("error")
   }
   
   

@@ -11,8 +11,6 @@ import scala.collection.mutable.ListBuffer
 class NodeInspector(n: TagNode) {
   var node: TagNode = n
 
-  val noop = {}
-  
   def cleanURL(url: String) : String = {
     var clean = url.replaceAll("&#x2F;", "/")
     val needsHttp = clean indexOf "//"
@@ -27,9 +25,17 @@ class NodeInspector(n: TagNode) {
       def visit(parentNode: TagNode, htmlNode: HtmlNode): Boolean = {
         htmlNode match {
           case tagNode: TagNode => {
-            var link = tagNode.getAttributeByName("href")
-            if(link != null){
-              callback("link",  cleanURL(link))              
+            // TODO pass in a htmlNode parser instead of this
+            if(tagNode.toString() == "img"){
+              var src = tagNode.getAttributeByName("src")
+              if(src != null){
+                callback("img",  cleanURL(src))              
+              } 
+            } else if(tagNode.toString() == "a"){
+              var link = tagNode.getAttributeByName("href")
+              if(link != null){
+                callback("link",  cleanURL(link))              
+              }              
             }
           }
           case commentNode: CommentNode => {}          
@@ -54,8 +60,5 @@ class NodeInspector(n: TagNode) {
     })
   
     list
-  }
-  
-
-  
+  }  
 }
