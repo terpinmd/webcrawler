@@ -6,29 +6,27 @@ import webcrawler.WebHandler._
 import webcrawler.TagUtil._
 import scala.collection.mutable.ListBuffer
 import scala.collection.mutable.Stack
-
+import scala.collection.mutable.Set
 class WebRunner {
  
   var visited = Set[String]()
-  var allLinks = Stack[String]()
+  var allLinks = Set[String]()
  
   
-  val rootURL = "http://www.testudotimes.com"
-  allLinks.push(rootURL)
+  val rootURL = "http://www.nextcentury.com"
+  allLinks += rootURL
   
   def run() = {
-     while(iterate(rootURL, allLinks)){
-       println("got one")
-     }
-    println(allLinks)
+     iterate(rootURL, allLinks, visited)
+   // println(allLinks)
     println("done") //wtf if this is gone then program blows up
   }
   
-  def iterate(url: String, unvistedLinks: Stack[String]) : Boolean = {
+  def iterate(url: String, unvistedLinks: Set[String], visitedLinks: Set[String]) : Boolean = {
 
-    if(unvistedLinks.isEmpty){
-      return true
-    }
+    println("----------------" + url)
+    
+
     var inspector = new NodeInspector(body(url))
     var list = inspector.collect(asJSON)
 
@@ -36,21 +34,20 @@ class WebRunner {
     var linksNodes = list.map({json => toTag(json)}).filter(item => item.tag == "link")
     var uniqueLinks =  linksNodes.map({link => link.content}).filter(item => item startsWith rootURL).toSet[String] 
 
-    //The links we still need to visit is the current list minus whats been visited   
-    uniqueLinks --= visited
-    uniqueLinks -= url
-    //We have visited this url so grab it
-    visited += url
+    //We have now visited this URL so add it
+    visitedLinks += url
 
+    //println("--2> " + uniqueLinks.size)
+    unvistedLinks ++= uniqueLinks
+    unvistedLinks --= visitedLinks
+
+    unvistedLinks -= url
     
-    unvistedLinks.pushAll(uniqueLinks)
-
-    var t = uniqueLinks.toArray
-    if(t.length == 0){
+    if(unvistedLinks.size == 0){
       return false
-    } 
-      else
-    return iterate(t(0), unvistedLinks)
+    }
+    
+    return iterate(unvistedLinks.head, unvistedLinks, visitedLinks)
   }
   
 } 
