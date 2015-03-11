@@ -2,9 +2,7 @@ package webcrawler
 
 import org.apache.commons.lang._
 import webcrawler.WebHandler._
-//import webcrawler.NodeInspector
 import webcrawler.TagUtil._
-import scala.collection.mutable.ListBuffer
 import scala.collection.mutable.Stack
 import scala.collection.mutable.Set
 class WebRunner {
@@ -17,10 +15,8 @@ class WebRunner {
   val rootURL = "http://www.nextcentury.com"
   allLinks += rootURL
   
-  def run() = {
+  def run() : Boolean = {
     iterate(rootURL, allLinks, visited)
-   // println(allLinks)
-    println("done") //wtf if this is gone then program blows up
   }
   
   def iterate(url: String, unvistedLinks: Set[String], visitedLinks: Set[String]) : Boolean = {
@@ -31,8 +27,11 @@ class WebRunner {
     var inspector = new NodeInspector(body(url))
     var siteNodes = inspector.collect(asJSON)
 
-    //Grab the links from the site nodes
-    var linksNodes = siteNodes.map({json => toTag(json)}).filter(item => item.tag == "link")
+    //Turn the nodes into tags. This can be what is handed off to someoutside process later
+    var nodesAsTags = siteNodes.map({json => toTag(json)})
+    
+    //Grab the unique links
+    var linksNodes = nodesAsTags.filter(item => item.tag == "link")
     
     //These are the unique links for the current URL
     var uniqueLinks =  linksNodes.map({link => link.content}).filter(item => item startsWith rootURL).toSet[String] 
