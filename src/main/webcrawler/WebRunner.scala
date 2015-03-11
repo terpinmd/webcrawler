@@ -4,12 +4,12 @@ import org.apache.commons.lang._
 import webcrawler.WebHandler._
 import webcrawler.TagUtil._
 import scala.collection.mutable.Stack
-import scala.collection.mutable.Set
+import scala.collection.mutable.HashSet
 class WebRunner {
  
   //These are all temporary we can fill in allLinks from some repository later
-  var visited = Set[String]()
-  var allLinks = Set[String]()
+  var visited = new HashSet[String]()
+  var allLinks = new HashSet[String]()
    
   //This is a good test site to use for now
   val rootURL = "http://www.nextcentury.com"
@@ -19,7 +19,7 @@ class WebRunner {
     iterate(rootURL, allLinks, visited)
   }
   
-  def iterate(url: String, unvistedLinks: Set[String], visitedLinks: Set[String]) : Boolean = {
+  def iterate(url: String, unvistedLinks: HashSet[String], visitedLinks: HashSet[String]) : Boolean = {
 
     println(url)
     

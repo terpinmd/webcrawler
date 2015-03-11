@@ -21,7 +21,7 @@ object WebHandler {
       return rootNode.getElementsByName("body", true)(0)
     } catch{
       case ex: java.io.IOException =>{
-        
+          println(ex) //Need to figure out what to do here
       }
     }
     return new TagNode("error")
